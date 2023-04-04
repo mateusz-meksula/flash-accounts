@@ -2,6 +2,8 @@
 *.db
 db.*
 .*
+/*.egg-info/
+/dist/
 
 /core/
 manage.py
