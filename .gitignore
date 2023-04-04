@@ -1,0 +1,8 @@
+*.pyc
+*.db
+.*
+
+/core/
+manage.py
+
+!.gitignore
