@@ -26,7 +26,7 @@ if flash_settings.ACTIVATE_ACCOUNT:
 # Password reset
 urlpatterns += [
     path(
-        "password-reset",
+        "password-reset/",
         views.password_reset_request,
         name="password_reset",
     ),
