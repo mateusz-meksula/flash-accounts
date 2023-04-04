@@ -59,7 +59,8 @@ def activate_account(request, token_value):
 @permission_classes([AllowAny])
 def password_reset_request(request):
     """
-    Obtain email address, create token and send email with instructions.
+    Obtain email address, create password reset token
+    and send email with instructions.
     """
 
     serializer = EmailSerializer(data=request.data)
@@ -71,6 +72,35 @@ def password_reset_request(request):
 
     services.create_and_send_password_reset_token(user, request)
 
+    return Response(
+        {"response": f"Email with instructions has been sent to {email}"},
+        status=status.HTTP_200_OK,
+    )
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def account_activation_resend(request):
+    """
+    Obtain email address, create activation token
+    and send email with instructions.
+    Check if user account is already activated.
+    """
+
+    serializer = EmailSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    email = serializer.data["email"]
+    user = get_object_or_404(User, email=email)
+
+    if user.is_active:
+        return Response(
+            {"account": "Account already activated."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    services.create_and_send_activation_token(user, request)
     return Response(
         {"response": f"Email with instructions has been sent to {email}"},
         status=status.HTTP_200_OK,

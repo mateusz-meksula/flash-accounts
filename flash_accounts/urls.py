@@ -16,6 +16,11 @@ if flash_settings.ACTIVATE_ACCOUNT:
             views.activate_account,
             name="activate",
         ),
+        path(
+            "account/activate-resend/",
+            views.account_activation_resend,
+            name="activate_resend",
+        ),
     ]
 
 # Password reset

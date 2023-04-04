@@ -390,3 +390,144 @@ class PasswordResetConfirmTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, {"password": "Password has been changed."})
         self.assertEqual(self.user.check_password("newtestpassWORD##1"), True)
+
+
+if flash_settings.ACTIVATE_ACCOUNT:
+
+    class ConfirmEmailTestCase(APITestCase):
+        def setUp(self) -> None:
+            self.user = User.objects.create_user(
+                username="testUser",
+                email="testemail@test.com",
+                password="testpassword123",
+            )
+            self.user.is_active = False
+            self.user.save()
+            self.token = ActivationToken.objects.create(user=self.user)
+            self.token.set_up_token()
+            self.token.save()
+            self.valid_url = reverse(
+                "activate", kwargs={"token_value": self.token.token}
+            )
+            self.invalid_url = reverse(
+                "activate", kwargs={"token_value": "invalidTOKEN123"}
+            )
+
+        def test_valid_email_confirmation(self):
+            self.assertEqual(User.objects.first().is_active, False)
+
+            response = self.client.get(self.valid_url)
+
+            self.user.refresh_from_db()
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data, {"account": "Account activated."})
+            self.assertEqual(self.user.is_active, True)
+
+        def test_url_missing_token(self):
+            self.valid_url = self.valid_url[:-56]
+            response = self.client.get(self.valid_url)
+
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        def test_invalid_token(self):
+            response = self.client.get(self.invalid_url)
+
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        def test_expired_token(self):
+            self.token.expiration_date = timezone.now() - timezone.timedelta(seconds=5)
+            self.token.save()
+
+            response = self.client.get(self.valid_url)
+
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertEqual(response.data, {"token": "token has expired."})
+
+    class ConfirmEmailResendTestCase(APITestCase):
+        def setUp(self) -> None:
+            self.inactive_user = User.objects.create_user(
+                username="testUser",
+                email="testemail@test.com",
+                password="testpassword123",
+                is_active=False,
+            )
+            self.inactive_user.save()
+            self.active_user = User.objects.create_user(
+                username="testActiveUser",
+                email="testemailactive@test.com",
+                password="testpassword123",
+                is_active=True,
+            )
+            self.active_user.save()
+
+            self.token = ActivationToken.objects.create(user=self.inactive_user)
+            self.token.generate_token()
+            self.old_expiration_date = timezone.now() - timezone.timedelta(seconds=10)
+            self.token.expiration_date = self.old_expiration_date
+            self.token.save()
+
+            self.valid_data = {"email": "testemail@test.com"}
+            self.invalid_data = {"email": "t35tem4il@test.com"}
+            self.active_user_data = {"email": "testemailactive@test.com"}
+
+            self.url = reverse("activate_resend")
+
+        def test_email_not_exist(self):
+            response = self.client.post(self.url, data=self.invalid_data)
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        def test_email_not_provided(self):
+            response = self.client.post(self.url)
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        def test_user_already_active(self):
+            response = self.client.post(self.url, data=self.active_user_data)
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertEqual(response.data, {"account": "Account already activated."})
+
+        def test_token_regenerated(self):
+            response = self.client.post(self.url, data=self.valid_data)
+
+            self.token.refresh_from_db()
+            self.assertNotEqual(self.old_expiration_date, self.token.expiration_date)
+            self.assertLess(
+                self.token.expiration_date,
+                timezone.now()
+                + flash_settings.ACTIVATION_TOKEN_LIFETIME
+                + timezone.timedelta(seconds=10),
+            )
+            self.assertGreater(
+                self.token.expiration_date,
+                timezone.now()
+                + flash_settings.ACTIVATION_TOKEN_LIFETIME
+                - timezone.timedelta(seconds=50),
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        def test_verification_email_sent(self):
+            self.client.post(self.url, data=self.valid_data)
+            self.assertEqual(len(mail.outbox), 1)
+            self.token.refresh_from_db()
+
+            url = "http://testserver"
+            url += reverse("activate", kwargs={"token_value": self.token.token})
+            context = {
+                "url": url,
+                "username": "testUser",
+                "host": "testserver",
+            }
+
+            template_html = loader.render_to_string(
+                f"{flash_settings.ACTIVATION_EMAIL_TEMPLATE}.html",
+                context,
+            )
+            template_txt = loader.render_to_string(
+                f"{flash_settings.ACTIVATION_EMAIL_TEMPLATE}.txt",
+                context,
+            )
+
+            email_html = mail.outbox[0].alternatives[0][0]
+            email_txt = mail.outbox[0].body
+
+            self.assertEqual(template_html, email_html)
+            self.assertEqual(template_txt, email_txt)
