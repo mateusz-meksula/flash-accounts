@@ -11,8 +11,8 @@ DEFAULT_SETTINGS = {
     "ACTIVATION_EMAIL_SUBJECT": "Activate your account.",
     # password reset feature settings
     "PASSWORD_RESET_TOKEN_LIFETIME": timezone.timedelta(hours=1),
-    "PASSWORD_RESET_EMAIL_TEMPLATE": "empty for now",
-    "PASSWORD_RESET_EMAIL_SUBJECT": "empty for now",
+    "PASSWORD_RESET_EMAIL_TEMPLATE": "flash_accounts/password_reset",
+    "PASSWORD_RESET_EMAIL_SUBJECT": "Password reset request.",
     # email address, from which emails will appear to be sent
     "EMAIL_FROM": getattr(settings, "DEFAULT_EMAIL_FROM", "change@me.com"),
 }

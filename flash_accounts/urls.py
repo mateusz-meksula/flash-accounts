@@ -17,3 +17,17 @@ if flash_settings.ACTIVATE_ACCOUNT:
             name="activate",
         ),
     ]
+
+# Password reset
+urlpatterns += [
+    path(
+        "password-reset",
+        views.password_reset_request,
+        name="password_reset",
+    ),
+    path(
+        "password-reset/confirm/<str:token_value>/",
+        views.password_reset_confirm,
+        name="password_reset_confirm",
+    ),
+]

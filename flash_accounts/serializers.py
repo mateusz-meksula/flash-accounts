@@ -36,3 +36,32 @@ class UserCreateSerializer(serializers.ModelSerializer):
             raise ValidationError({"password": "Provided passwords does not match."})
         attrs.pop("password2")
         return attrs
+
+
+class EmailSerializer(serializers.Serializer):
+    """
+    Serializer for email address.
+    """
+
+    email = serializers.EmailField(required=True)
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    """
+    Serializer for changing password.
+    """
+
+    password = serializers.CharField(
+        write_only=True, required=True, validators=[validate_password]
+    )
+    password2 = serializers.CharField(write_only=True, required=True)
+
+    def validate(self, attrs):
+        """
+        Checks if user provided same password twice.
+        """
+
+        if attrs["password"] != attrs["password2"]:
+            raise ValidationError({"password": "Provided passwords does not match."})
+        attrs.pop("password2")
+        return attrs
