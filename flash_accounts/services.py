@@ -56,7 +56,7 @@ def create_adequate_token(token_class_name, user):
 
 def build_url(request, url_name: str, token: str):
     """
-    Make an url with token as a path parameter
+    Make an url with token as a path parameter.
     """
     url = f"{request.scheme}://{request.get_host()}"
     url += reverse(url_name, kwargs={"token_value": token})
@@ -65,7 +65,7 @@ def build_url(request, url_name: str, token: str):
 
 def send_mail_with_token(to_email, username, url, host, template_name, subject):
     """
-    Build mail from template and send to the user
+    Build mail from template and send to the user.
     """
     from_email = flash_settings.EMAIL_FROM
 

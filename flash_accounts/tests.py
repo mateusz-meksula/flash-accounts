@@ -394,7 +394,7 @@ class PasswordResetConfirmTestCase(APITestCase):
 
 if flash_settings.ACTIVATE_ACCOUNT:
 
-    class ConfirmEmailTestCase(APITestCase):
+    class ActivateAccountTestCase(APITestCase):
         def setUp(self) -> None:
             self.user = User.objects.create_user(
                 username="testUser",
@@ -443,7 +443,7 @@ if flash_settings.ACTIVATE_ACCOUNT:
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
             self.assertEqual(response.data, {"token": "token has expired."})
 
-    class ConfirmEmailResendTestCase(APITestCase):
+    class ActivateAccountResendTestCase(APITestCase):
         def setUp(self) -> None:
             self.inactive_user = User.objects.create_user(
                 username="testUser",
