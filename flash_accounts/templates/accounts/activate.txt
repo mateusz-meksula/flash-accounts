@@ -1,0 +1,9 @@
+Hello, {{ username }}.
+
+We are glad that you registered on our website.
+Please activate your account by clicking the link below:
+
+{{ url }}
+
+Regards,
+{{ host }} Team.

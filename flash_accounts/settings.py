@@ -7,8 +7,8 @@ DEFAULT_SETTINGS = {
     # account activation feature settings
     "ACTIVATE_ACCOUNT": True,
     "ACTIVATION_TOKEN_LIFETIME": timezone.timedelta(hours=1),
-    "ACTIVATION_EMAIL_TEMPLATE": "empty for now",
-    "ACTIVATION_EMAIL_SUBJECT": "empty for now",
+    "ACTIVATION_EMAIL_TEMPLATE": "flash_accounts/activate",
+    "ACTIVATION_EMAIL_SUBJECT": "Activate your account.",
     # password reset feature settings
     "PASSWORD_RESET_TOKEN_LIFETIME": timezone.timedelta(hours=1),
     "PASSWORD_RESET_EMAIL_TEMPLATE": "empty for now",
@@ -21,11 +21,11 @@ DEFAULT_SETTINGS = {
 class FlashSettings:
     """
     Class for managing settings.
-    
+
     Use user settings in priority,
     then default settings declared in `DEFAULT_SETTINGS` dict.
     """
-    
+
     def __init__(self) -> None:
         self.default_settings = DEFAULT_SETTINGS
         self._loaded_settings = set()
@@ -38,7 +38,7 @@ class FlashSettings:
 
     def __getattr__(self, attr):
         """
-        Allows to access settings by attributes e.g: 
+        Allows to access settings by attributes e.g:
             `flash_settings.ACTIVATE_ACCOUNT`
         """
 
@@ -62,7 +62,7 @@ class FlashSettings:
         """
         Load user settings from main settings.
         """
-        
+
         user_settings = getattr(settings, "FLASH_SETTINGS", {})
         self._user_settings = self.validate_user_settings(user_settings)
 
@@ -70,7 +70,7 @@ class FlashSettings:
         """
         Basic validation of user settings.
         """
-        
+
         # raise ValueError if provided setting is not defaults.
         unknown_settings = set(user_settings.keys() - self.default_settings.keys())
         if unknown_settings:
