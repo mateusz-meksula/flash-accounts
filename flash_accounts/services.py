@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from .models import ActivationToken
+from .models import ActivationToken, PasswordResetToken
 from .settings import flash_settings
 
 
@@ -24,6 +24,23 @@ def create_and_send_activation_token(user, request):
         host=request.get_host(),
         template_name=flash_settings.ACTIVATION_EMAIL_TEMPLATE,
         subject=flash_settings.ACTIVATION_EMAIL_SUBJECT,
+    )
+
+
+def create_and_send_password_reset_token(user, request):
+    """
+    Generate password reset token and send email with instructions.
+    """
+    token = create_adequate_token(PasswordResetToken, user)
+    url = build_url(request, "password_reset_confirm", token.token)
+
+    send_mail_with_token(
+        to_email=user.email,
+        username=user.username,
+        url=url,
+        host=request.get_host(),
+        template_name=flash_settings.PASSWORD_RESET_EMAIL_TEMPLATE,
+        subject=flash_settings.PASSWORD_RESET_EMAIL_SUBJECT,
     )
 
 
