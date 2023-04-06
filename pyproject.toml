@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flash-accounts"
+authors = [{ name = "Mateusz Meksuła" }]
+license = { text = "MIT" }
+description = "DRF Reusable app for user registration"
+requires-python = ">=3.7"
+classifiers = [
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Framework :: Django",
+]
+keywords = ["django", "restframework"]
+dynamic = ["version", "readme"]
+
+[project.urls]
+"Homepage" = "https://github.com/MeksulaM/flash-accounts"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = "flash_accounts.VERSION" }
+readme = { file = ["README.md"] }
