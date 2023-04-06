@@ -27,7 +27,7 @@ pip install flash-accounts
 
 ### **Configuration**
 
-Add `flash_accounts` along `rest_framework` to your `INSTALLED_APPS` in project's `settings.py`:
+Add `flash_accounts` along `rest_framework` to `INSTALLED_APPS` in project's `settings.py` file:
 
 ```python
 INSTALLED_APPS = [
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
 ]
 ```
 
-Include Flash Accounts endpoints in your main `urls.py` file:
+Include Flash Accounts endpoints in project's `urls.py` file:
 
 ```python
 from django.urls import path, include
@@ -50,7 +50,7 @@ urlpatterns = [
 ]
 ```
 
-Configure an email backend. During development, you can use the console backend:
+Configure an email backend. During development, you can use the console backend. Add the following line to the projects's `settings.py` file:
 
 ```python
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -60,7 +60,7 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 You can learn about Django email backends [here.](https://docs.djangoproject.com/en/4.2/topics/email/#email-backends)
 
 <br>
-Last step is to run migrations:
+Finally, run migrations by the following command:
 
 ```console
 python manage.py migrate
@@ -257,7 +257,7 @@ Path to the activation email templates, **without** the file extension. This pat
 
 #### <li><b> `ACTIVATION_EMAIL_SUBJECT` </b></li>
 
-Subject of activation email that is send when new user has registered.
+Subject of activation email that is sent when new user registers.
 
 #### <li><b> `PASSWORD_RESET_TOKEN_LIFETIME` </b></li>
 
@@ -272,7 +272,7 @@ Path to the password reset email templates, **without** the file extension. This
 
 #### <li><b> `PASSWORD_RESET_EMAIL_SUBJECT` </b></li>
 
-Subject of password reset email that is send when new user requests password reset.
+Subject of password reset email that is sent when new user requests password reset.
 
 #### <li><b> `EMAIL_FROM` </b></li>
 
@@ -281,7 +281,7 @@ Flash Accounts first checks if `DEFAULT_EMAIL_FROM` field is set in project's `s
 
 ### **Customizing settings**
 
-Every setting value can be customized by creating a `FLASH_SETTINGS` dictionary in main `settings.py` file.
+Every setting value can be customized by creating a `FLASH_SETTINGS` dictionary in project's `settings.py` file.
 
 Example:
 
@@ -310,7 +310,7 @@ Email templates are located in `flash_accounts/templates/flash_accounts/` direct
 ```
 
 With that directory structure, the `APP_DIRS` setting value in the `TEMPLATES` section in project's `settings.py` must be set to `True`.  
-If you want to provide your onw email templates, you must place them in a valid Django templates directory.
+If you want to provide your own email templates, you must place them in a valid Django templates directory.
 
 Example:  
 You can specify general templates directory:
@@ -355,7 +355,7 @@ FLASH_SETTINGS = {
 }
 ```
 
-It is nesseccary to include the `{{ url }}` Django template tag in your custom template files, so hat emails will contain activation links or password reset links.  
+It is nesseccary to include the `{{ url }}` Django template tag in your custom template files, so that emails will contain activation links or password reset links.  
 Optional tags include `{{ username }}` and `{{ host }}`.
 
 ## **Upcoming features**
