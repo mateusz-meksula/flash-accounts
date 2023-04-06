@@ -4,9 +4,10 @@ db.*
 .*
 /*.egg-info/
 /dist/
-
 /dist/
-/core/
 manage.py
 
+
+PyPIREADME.md
 !.gitignore
+
