@@ -11,9 +11,9 @@ It ships the following functionalities:
 
 ## **Requirements**
 
--   python>=3.7
--   django>=3.0
--   djangorestframework>=3.11.0
+-   python >= 3.7
+-   django >= 3.0
+-   djangorestframework >= 3.11.0
 
 ## **Getting started**
 
@@ -56,7 +56,7 @@ Configure an email backend. During development, you can use the console backend.
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 ```
 
-**Note**: It is necessary to declare an email backend in project's `settings.py` file.  
+**Note**: It is necessary to declare an email backend for Flash Accounts to work correctly.  
 You can learn about Django email backends [here.](https://docs.djangoproject.com/en/4.2/topics/email/#email-backends)
 
 <br>
@@ -211,7 +211,7 @@ curl -X POST \
     http://localhost:8000/api/auth/password-reset/confirm/8kRuuRApqEQAeFeyzMSyAiYKtyT5DKEhrSkuSBcm3bmb4Gmih6DEVhr/
 
 {
-    "password": "Password has been changed
+    "password": "Password has been changed."
 }
 ```
 
@@ -223,6 +223,8 @@ The default settings values are shown below:
 
 ```python
 from django.utils import timezone
+from django.conf import settings
+
 
 DEFAULT_SETTINGS = {
     "ACTIVATE_ACCOUNT": True,
@@ -272,7 +274,7 @@ Path to the password reset email templates, **without** the file extension. This
 
 #### <li><b> `PASSWORD_RESET_EMAIL_SUBJECT` </b></li>
 
-Subject of password reset email that is sent when new user requests password reset.
+Subject of password reset email that is sent when user requests password reset.
 
 #### <li><b> `EMAIL_FROM` </b></li>
 
