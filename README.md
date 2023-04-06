@@ -225,7 +225,6 @@ The default settings values are shown below:
 from django.utils import timezone
 from django.conf import settings
 
-
 DEFAULT_SETTINGS = {
     "ACTIVATE_ACCOUNT": True,
     "ACTIVATION_TOKEN_LIFETIME": timezone.timedelta(hours=1),
