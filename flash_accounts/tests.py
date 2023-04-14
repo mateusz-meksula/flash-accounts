@@ -172,8 +172,10 @@ class RegisterTestCase(APITestCase):
 
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(User.objects.first().username, "testUser")
-        self.assertEqual(User.objects.first().email, "testemail@test.com")
+        u = User.objects.first()
+        self.assertEqual(u.username, "testUser")
+        self.assertEqual(u.email, "testemail@test.com")
+        self.assertEqual(u.check_password("testpassword123"), True)
 
         if flash_settings.ACTIVATE_ACCOUNT:
             self.assertEqual(User.objects.first().is_active, False)
