@@ -20,17 +20,20 @@ class UserCreateAPIView(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserCreateSerializer
 
-    # Account activation
-    if flash_settings.ACTIVATE_ACCOUNT:
 
-        def perform_create(self, serializer):
-            """
-            Save user account as inactive, create token and
-            send mail with activation link.
-            """
-
+    def perform_create(self, serializer):
+        """
+        Save user account as inactive, create token and
+        send mail with activation link.
+        """
+        # Account activation
+        if flash_settings.ACTIVATE_ACCOUNT:
             user = serializer.save(is_active=False)
             services.create_and_send_activation_token(user, self.request)
+        else:
+            user = serializer.save()
+        user.set_password(serializer.validated_data["password"])
+        user.save()
 
 
 @api_view(["GET"])
