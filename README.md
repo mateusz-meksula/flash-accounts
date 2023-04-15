@@ -361,7 +361,7 @@ Optional tags include `{{ username }}` and `{{ host }}`.
 
 ## **Upcoming features**
 
-Currently, there are no features planned for the next release.
+- Setting for switching off HTML email format.
 
 ## **Contributing**
 
