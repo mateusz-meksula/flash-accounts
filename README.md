@@ -1,4 +1,4 @@
-# <img src="./flash_accounts_header.png" alt="logo">
+# <img src="./flash_accounts_header.jpg" alt="logo">
 
 ## **About**
 
